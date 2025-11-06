@@ -1,13 +1,25 @@
-clear; clc; close all;
-rng(12345); 
+function results = automatic_metro_in_gibbs(dataFile, start_idx)
+% automatic_metro_in_gibbs(dataFile)
+% Wraped version of the original script. dataFile is optional (default
+% 'ASX_2000_2025.csv'). Returns a struct `results` with posterior
+% summaries and forecasts.
+
+if nargin < 1 || isempty(dataFile)
+    dataFile = 'ASX_2000_2025.csv';
+end
+
+% Keep RNG for reproducibility inside the function
+rng(12345);
 
 fprintf('Loading data...\n');
-data = readtable('ASX_2000_2025.csv');
+data = readtable(dataFile);
 y_full = data.ret_asx;  % Full sample: 2000 to 2025
 
 % Estimate start index for 2015-01-01
 % Approx: 15 years * 252 trading days = 3780
-start_idx = 3781;  % 1-based indexing
+if nargin < 2 || isempty(start_idx)
+    start_idx = 3781;  % 1-based indexing
+end
 y = y_full(start_idx:end);  % Subsample: 2015 to 2025
 T = length(y);
 
@@ -152,7 +164,7 @@ current_logprior = logprior_logGARCH(current_theta);
 chain(1, :) = current_theta';
 
 %% Step 6: MCMC loop
-fprintf('Tuning Iter %d: Running Metropolis-within-Gibbs...\n', tuning_iter);
+fprintf('Running Iter %d: Running Metropolis-within-Gibbs with n_iter=%d...\n', tuning_iter, n_iter);
 for iter = 2:n_iter
     for j = 1:4
         % Propose new value
@@ -240,6 +252,21 @@ fprintf('\nForecasting volatility...\n');
 fprintf('1-step forecast (15-Oct-2025): %.4f\n', mean(vol_1step));
 fprintf('2-step forecast (16-Oct-2025): %.4f\n', mean(vol_2step));
 
+
+% Prepare results to return
+results = struct();
+results.post_mean = post_mean;
+results.post_std = post_std;
+results.post_CI = post_CI;
+results.theta_samp = theta_samp;
+results.post_burn = post_burn;
+results.chain = chain;
+results.sigma_proposal = sigma_proposal;
+results.accept_rate = accept_rate;
+results.vol_1step = vol_1step;
+results.vol_2step = vol_2step;
+
+end % function automatic_metro_in_gibbs
 
 %% Supporting Functions
 % (Functions are unchanged from your original script)
