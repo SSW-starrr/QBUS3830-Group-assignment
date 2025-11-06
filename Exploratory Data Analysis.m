@@ -13,7 +13,7 @@ n = height(data);
 % Rebuild true daily trading timeline (6513 evenly spaced points)
 startDate = datetime(2000,1,4);
 endDate   = datetime(2025,10,14);
-data.Date = linspace(startDate, endDate, n)';
+data.Date = dateshift(linspace(startDate, endDate, n)', 'start', 'day');
 
 fprintf('Full dataset: %s → %s (%d obs)\n', ...
     string(min(data.Date)), string(max(data.Date)), n);
