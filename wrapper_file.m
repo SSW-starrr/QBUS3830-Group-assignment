@@ -11,8 +11,10 @@ while true
     x = input("Do you want to use the cleaned data file? Y/N [Y]: ", 's');
     if isempty(x) || upper(x) == 'Y'
         current_data_file = data_file_cleaned;
+    else
+        current_data_file = data_file;
     end
-    model = input("Select model - 1: Automatic tuning, 2: Manual tuning, 3: FFVB, 4: RWM [1]")
+    model = input("Select model - 1: Automatic tuning, 2: Manual tuning, 3: FFVB, 4: RWM [1]");
     if isempty(model) || model == 1
         current_data_file = data_file;
         fprintf("Using full sample data file: %s\n", current_data_file);

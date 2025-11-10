@@ -45,7 +45,7 @@ function results = rwm_loggarch_baseline(filename, burnin, nkeep, seed)
     %% ======== Initialisation ========
     th0_raw = [mean(y), 0, 0.1, 0.9];
     th0 = [th0_raw(1), atanh(th0_raw(2)/2), atanh(th0_raw(3)/2), atanh(th0_raw(4))];
-    Sigma = diag([0.05, 0.1, 0.05, 0.2].^2);
+    Sigma = diag([0.05, 0.0047, 0.0312, 0.3164].^2);
 
     total = burnin + nkeep;
     draws = zeros(nkeep,4);

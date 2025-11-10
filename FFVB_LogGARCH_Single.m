@@ -1,4 +1,4 @@
-function FFVB_LogGARCH_Single(filename, seed)
+function results = FFVB_LogGARCH_Single(filename, seed)
 
 fprintf('=== FFVB for Log-GARCH(1,1) Model - Optimized Version ===\n');
 
