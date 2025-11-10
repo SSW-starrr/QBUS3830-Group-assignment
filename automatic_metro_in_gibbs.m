@@ -1,26 +1,22 @@
-function results = automatic_metro_in_gibbs(dataFile, start_idx)
+function results = automatic_metro_in_gibbs(dataFile, seed)
 % automatic_metro_in_gibbs(dataFile)
 % Wraped version of the original script. dataFile is optional (default
 % 'ASX_2000_2025.csv'). Returns a struct `results` with posterior
 % summaries and forecasts.
 
 if nargin < 1 || isempty(dataFile)
-    dataFile = 'ASX_2000_2025.csv';
+    dataFile = 'ASX200_Cleaned_Last10Years.csv';
 end
 
 % Keep RNG for reproducibility inside the function
-rng(12345);
+rng(seed);
 
 fprintf('Loading data...\n');
 data = readtable(dataFile);
 y_full = data.ret_asx;  % Full sample: 2000 to 2025
 
 % Estimate start index for 2015-01-01
-% Approx: 15 years * 252 trading days = 3780
-if nargin < 2 || isempty(start_idx)
-    start_idx = 3781;  % 1-based indexing
-end
-y = y_full(start_idx:end);  % Subsample: 2015 to 2025
+y = y_full();  % Subsample: 2015 to 2025
 T = length(y);
 
 fprintf('Using %d observations from 2015 to 2025.\n', T);
@@ -33,16 +29,14 @@ beta_tilde0 = atanh(beta0);  % transform to unconstrained space
 theta_tilde = [mu0, omega0, alpha0, beta_tilde0]';  % [mu, omega, alpha, beta_tilde]
 %% Step 3: MCMC settings
 n_iter = 5000;
-burn_in = 5000;
-
 %% Step 3.5 Automatically tune the sigma proposal
-sigma_proposal = [0.05, 0.1, 0.05, 0.2];  % Initial guess
+sigma_proposal = [0.05, 0.05, 0.05, 0.05];  % Initial guess
 sigma_min = zeros(1, 4);                 % Lower bound for bisection
 sigma_max = repmat(Inf, 1, 4);         % Upper bound for bisection
 max_tuning_iter = 25;                    % Safety break for tuning
 tuning_iter = 0;
 target_min = 0.20;
-target_max = 0.30;
+target_max = 0.25;
 
 end_loop = 0;
 fprintf('Starting MCMC with auto-tuning...\n');

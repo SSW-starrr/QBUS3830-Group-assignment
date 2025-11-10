@@ -1,9 +1,19 @@
-clear; clc; close all;
-rng(12345); 
+function results = Metropolis_within_Gibbs(filename, seed)
 fprintf('Loading data...\n');
-data = readtable('ASX_2000_2025.csv');
-y = data.ret_asx;  % T x 1 vector
+if nargin < 1 || isempty(filename)
+    filename = 'ASX200_Cleaned_Last10Years.csv';
+end
+
+data = readtable(filename);
+y = data.ret_asx;  % Full sample: 2000 to 2025
+
+rng(seed);
+
 T = length(y);
+
+fprintf('Using %d observations from 2015 to 2025.\n', T);
+
+% Initial values based on subsample
 mu0 = mean(y);
 omega0 = log(std(y));
 alpha0 = 0.1;
@@ -15,7 +25,7 @@ theta_tilde = [mu0, omega0, alpha0, beta_tilde0]';  % [mu, omega, alpha, beta_ti
 %% Step 3: MCMC settings
 n_iter = 30000;
 burn_in = 5000;
-sigma_proposal = [0.05, 0.1, 0.05, 0.2];  % tune for 20%-40% acceptance
+sigma_proposal = [0.05, 0.0047, 0.0312, 0.3164];  % tune for 20%-40% acceptance
 
 %% Step 4: Pre-allocate
 chain = zeros(n_iter, 4);
@@ -113,6 +123,17 @@ fprintf('\nForecasting volatility...\n');
 fprintf('1-step forecast (15-Oct-2025): %.4f\n', mean(vol_1step));
 fprintf('2-step forecast (16-Oct-2025): %.4f\n', mean(vol_2step));
 
+results = struct();
+results.post_mean = post_mean;
+results.post_std = post_std;
+results.post_CI = post_CI;
+results.theta_samp = theta_samp;
+results.post_burn = post_burn;
+results.chain = chain;
+results.sigma_proposal = sigma_proposal;
+results.accept_rate = accept_rate;
+results.vol_1step = vol_1step;
+results.vol_2step = vol_2step;
 %% Supporting Functions
 
 function logL = loglik_logGARCH(theta_tilde, y)
@@ -200,5 +221,4 @@ for i = 1:N
     vol_2step(i) = exp(log_sigma_T2);
 end
 end
-
-%% End of main script
+end

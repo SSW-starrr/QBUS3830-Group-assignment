@@ -6,7 +6,7 @@ clc; clear; close all;
 
 %% 1. Load data 
 data = readtable('ASX_2000_2025.csv');
-data.Properties.VariableNames = {'Index','Return'};
+data.Properties.VariableNames = {'Index','ret_asx'};
 
 n = height(data);
 
@@ -25,7 +25,7 @@ mask = data.Date >= winStart & data.Date <= winEnd;
 
 % Cleaned subset for all later modelling
 data_clean = data(mask, :);
-y      = data_clean.Return;
+y      = data_clean.ret_asx;
 dates  = data_clean.Date;
 
 fprintf('Estimation window: %s → %s  |  %d obs (≈ %.1f years)\n\n', ...
@@ -48,11 +48,11 @@ orange = [0.95 0.55 0.15];
 % 4. Full-period plot (highlight last-10-year window)
 
 figure('Name','Full Period Returns','Color','w'); hold on;
-yl = [min(data.Return) max(data.Return)];
+yl = [min(data.ret_asx) max(data.ret_asx)];
 
 fill([winStart winEnd winEnd winStart],[yl(1) yl(1) yl(2) yl(2)], ...
      [1 0.9 0.75],'EdgeColor','none','FaceAlpha',0.35);
-plot(data.Date, data.Return,'Color',blue,'LineWidth',0.7);
+plot(data.Date, data.ret_asx,'Color',blue,'LineWidth',0.7);
 yline(0,'--','Color',[0.5 0.5 0.5]);
 
 xlabel('Date (Daily Frequency)');
