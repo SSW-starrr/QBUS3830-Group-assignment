@@ -1,15 +1,15 @@
-function FFVB_LogGARCH_Single()
+function FFVB_LogGARCH_Single(filename, seed)
 
 fprintf('=== FFVB for Log-GARCH(1,1) Model - Optimized Version (2015–2025) ===\n');
 
 % Set random seed
-rng(12345, 'twister');
+rng(seed, 'twister');
 
 %% 1. Data Preparation and Preprocessing
 fprintf('1. Loading and preparing data...\n');
 
 % Load full data
-data = readtable('ASX_2000_2025.csv');
+data = readtable(filename);
 y_full = data.ret_asx;
 
 % Estimate start index for 2015-01-01 (15 years * 252 trading days = 3780)
