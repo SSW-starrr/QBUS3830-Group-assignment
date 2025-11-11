@@ -237,8 +237,11 @@ for i = 1:4
     xlabel('Iteration');
     ylabel('Value');
 end
-sgtitle('Trace Plots (after burn-in)');
-saveas(gcf, 'trace_plots.png');
+% Add a super-title and a small figure label identifying the algorithm
+sgtitle('Trace Plots (after burn-in) — automatic MWG');
+% also add a non-intrusive label in the figure corner
+annotation('textbox', [0.01, 0.96, 0.2, 0.03], 'String', 'automatic MWG', 'EdgeColor', 'none', 'FontWeight', 'bold');
+saveas(gcf, 'trace_plots_automatic_MWG.png');
 
 %% Step 9: Volatility Forecast for 15-Oct-2025 and 16-Oct-2025
 fprintf('\nForecasting volatility...\n');

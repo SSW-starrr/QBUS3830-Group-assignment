@@ -45,7 +45,7 @@ function results = rwm_loggarch_baseline(filename, burnin, nkeep, seed)
     %% ======== Initialisation ========
     th0_raw = [mean(y), 0, 0.1, 0.9];
     th0 = [th0_raw(1), atanh(th0_raw(2)/2), atanh(th0_raw(3)/2), atanh(th0_raw(4))];
-    Sigma = diag([0.05, 0.0047, 0.0312, 0.3164].^2);
+    Sigma = diag([0.05, 0.0047, 0.0512, 0.3364].^2);
 
     total = burnin + nkeep;
     draws = zeros(nkeep,4);
@@ -123,6 +123,8 @@ function results = rwm_loggarch_baseline(filename, burnin, nkeep, seed)
     end
     sgtitle('Trace Plots (after burn-in)');
     saveas(gcf, 'rwm_trace_plots.png');
+    annotation('textbox', [0.01, 0.96, 0.2, 0.03], 'String', 'RWM', 'EdgeColor', 'none', 'FontWeight', 'bold');
+    % Save both the regular and the manually-labeled versions
 
     %% ======== Return results in MWG-like structure ========
     results = struct();

@@ -1,5 +1,5 @@
 clear; clc; close all;
-% Exploratory_Data_Analysis;
+Exploratory_Data_Analysis;
 data_file = "ASX_2000_2025.csv";
 data_file_cleaned = "ASX200_Cleaned_Last10Years.csv";
 current_data_file = data_file;
