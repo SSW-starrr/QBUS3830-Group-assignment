@@ -1,6 +1,4 @@
-clear; clc; close all;
-rng(12345); 
-
+function results = Metropolics_within_Gibbs()
 fprintf('Loading data...\n');
 data = readtable('ASX_2000_2025.csv');
 y_full = data.ret_asx;  % Full sample: 2000 to 2025
@@ -208,5 +206,6 @@ for i = 1:N
     % E[|epsilon_{T+1}|] = sqrt(2/pi) for N(0,1)
     log_sigma_T2 = omega + alpha * (sqrt(2/pi) - sqrt(2/pi)) + beta * log_sigma_T1;
     vol_2step(i) = exp(log_sigma_T2);
+end
 end
 end
