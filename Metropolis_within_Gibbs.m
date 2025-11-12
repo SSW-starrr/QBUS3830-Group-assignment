@@ -5,7 +5,7 @@ if nargin < 1 || isempty(filename)
 end
 
 data = readtable(filename);
-y = data.ret_asx;  % Full sample: 2000 to 2025
+y = data.Return;  % Full sample: 2000 to 2025
 
 rng(seed);
 
@@ -25,7 +25,7 @@ theta_tilde = [mu0, omega0, alpha0, beta_tilde0]';  % [mu, omega, alpha, beta_ti
 %% Step 3: MCMC settings
 n_iter = 30000;
 burn_in = 5000;
-sigma_proposal = [0.05, 0.0047, 0.0312, 0.3164];  % tune for 20%-40% acceptance
+sigma_proposal = [0.0750, 0.0109, 0.0563, 0.3797];  % tune for 20%-40% acceptance
 
 %% Step 4: Pre-allocate
 chain = zeros(n_iter, 4);
@@ -122,9 +122,12 @@ saveas(gcf, 'trace_plots_manual_MWG.png');
 %% Step 9: Volatility Forecast for 15-Oct-2025 and 16-Oct-2025
 fprintf('\nForecasting volatility...\n');
 [vol_1step, vol_2step] = forecast_volatility(theta_samp, y);
+vol_1step95CI = quantile(vol_1step, [0.025, 0.975]);
+vol_2step95CI = quantile(vol_2step, [0.025, 0.975]);
 fprintf('1-step forecast (15-Oct-2025): %.4f\n', mean(vol_1step));
+fprintf('1-step forecast 95%% CI: [%.4f, %.4f]\n', vol_1step95CI);
 fprintf('2-step forecast (16-Oct-2025): %.4f\n', mean(vol_2step));
-
+fprintf('2-step forecast 95%% CI: [%.4f, %.4f]\n', vol_2step95CI);
 results = struct();
 results.post_mean = post_mean;
 results.post_std = post_std;
@@ -135,7 +138,9 @@ results.chain = chain;
 results.sigma_proposal = sigma_proposal;
 results.accept_rate = accept_rate;
 results.vol_1step = vol_1step;
+results.vol_1step95CI = vol_1step95CI;
 results.vol_2step = vol_2step;
+results.vol_2step95CI = vol_2step95CI;
 %% Supporting Functions
 
 function logL = loglik_logGARCH(theta_tilde, y)

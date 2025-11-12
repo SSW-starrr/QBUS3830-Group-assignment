@@ -1,7 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%
 %  RWM Sampler (Star-Space version) for log-GARCH(1,1)
 
-clc; clear; close all;
 
 %%  Load & subset data 
 data = readtable('ASX200_Cleaned_Last10Years.csv');

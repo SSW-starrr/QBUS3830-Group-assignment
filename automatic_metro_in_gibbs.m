@@ -13,7 +13,7 @@ rng(seed);
 
 fprintf('Loading data...\n');
 data = readtable(dataFile);
-y_full = data.ret_asx;  % Full sample: 2000 to 2025
+y_full = data.Return;  % Full sample: 2000 to 2025
 
 % Estimate start index for 2015-01-01
 y = y_full();  % Subsample: 2015 to 2025
