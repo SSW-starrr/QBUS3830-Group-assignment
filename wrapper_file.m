@@ -40,7 +40,7 @@ while true
         fprintf("Using RWM model with data file: %s\n", current_data_file);
         % Start timer, call the function, then report elapsed time
         tic;        
-        results = rwm_loggarch_baseline(current_data_file, 10000, 30000, 12345);
+        results = rwm_loggarch_baseline(current_data_file, 6500, 30000, 12345);
         elapsed_time = toc;
         fprintf('Function RWM took %.2f seconds.\n', elapsed_time);
     elseif model == 5
